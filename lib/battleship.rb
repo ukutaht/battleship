@@ -2,6 +2,7 @@
 require 'colored'
 require 'pry'
 require_relative 'symbols'
+require_relative 'indices'
 require_relative 'cell'
 require_relative 'coordinate_range'
 require_relative 'board'

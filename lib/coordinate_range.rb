@@ -1,11 +1,11 @@
 class CoordinateRange
-  def initialize(start_index, end_index)
-    @start_index = start_index
-    @end_index = end_index
+  def initialize(indices)
+    @start_index = indices.row
+    @end_index = indices.column
   end
 
-  def self.get(start_index, end_index)
-    new(start_index, end_index).get
+  def self.get(indices)
+    new(indices).get
   end
 
   def get

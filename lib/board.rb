@@ -20,13 +20,15 @@ class Board < Array
 
 
   def place_ship!(ship, start_index, end_index)
-    raise "Invalid placement" unless valid_placement?(ship, start_index, end_index)
+    indices = Indices.new(start_index, end_index)
+
+    raise "Invalid placement" unless valid_placement?(ship,indices)
   
-    CoordinateRange.get(start_index, end_index).each do |coordinate|
+    CoordinateRange.get(indices).each do |coordinate|
       index_lookup(coordinate).place_ship!
     end
   
-    @ships_at << CoordinateRange.get(start_index, end_index)
+    @ships_at << CoordinateRange.get(indices)
   end
 
   def replace_sunken_ships
@@ -71,10 +73,10 @@ class Board < Array
 
 
   def valid_placement?(ship, start_index, end_index)
-    CoordinateRange.get(start_index, end_index).each do |index|
+    CoordinateRange.get(indices).each do |index|
       return false if index_lookup(index).ship?
     end
-    CoordinateRange.get(start_index, end_index).length == SHIPS[ship]
+    CoordinateRange.get(indices.row, indices.column).length == SHIPS[ship]
   end
 end
 
