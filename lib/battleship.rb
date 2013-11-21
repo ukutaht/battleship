@@ -1,6 +1,8 @@
 # encoding: utf-8
 require 'colored'
 require 'pry'
+require_relative 'symbols'
+require_relative 'cell'
 require_relative 'board'
 require_relative 'player'
 require_relative 'constants'
@@ -83,9 +85,3 @@ class Battleship
 
 
 end
-
-game = Battleship.new
-
-
-game.show
-game.play
