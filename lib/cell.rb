@@ -3,6 +3,13 @@ class Cell
 
   alias_method :ship, :content
   alias_method :ship=, :content=
+
+  Sunken = "\u2620"
+  Hit = "\u2694"
+  Miss = "\u26AB"
+  Empty = "\u223C"
+  Ship = "\u26F5"
+
   
   def initialize(content=Empty)
     @content = content
@@ -19,13 +26,17 @@ class Cell
   def hit!
     @content = Hit
   end
+
+  def hit?
+    @content == Hit
+  end
   
   def miss!
     @content = Miss
   end
 
-  def place_ship!
-    raise "Not allowed" unless empty?
+  def mark_ship!
+    # raise "Cell is not empty" unless empty?
     
     @content = Ship
   end
@@ -35,7 +46,11 @@ class Cell
   end
 
   def sink!
-    @content = Sunk
+    @content = Sunken
+  end
+
+  def sunken?
+    @content == Sunken
   end
 
   def hide_ship

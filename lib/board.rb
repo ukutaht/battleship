@@ -1,50 +1,29 @@
 class Board < Array
-  attr_reader :ships_at, :hits_at
-
-  STANDARD_BOARD = Array.new(10) { Array.new(10, Cell.new) }
+  attr_reader :ships, :hits_at
   
-  def initialize(array=STANDARD_BOARD) # expect a 2D array
-    @ships_at = []
+  def initialize
+    array = Array.new(10) { Array.new(10, Cell.new) }
+    @ships = []
     @hits_at = []
-    super
+    super(array)
   end
 
 
-  def hide_ships
-   flat = self.flatten.map do |cell|
-     cell.hide_ship
-   end
-   flat.each_slice(10).to_a
-  end
-
-
-
-  def place_ship!(ship, start_index, end_index)
-    indices = Indices.new(start_index, end_index)
-
-    raise "Invalid placement" unless valid_placement?(ship,indices)
-  
-    CoordinateRange.get(indices).each do |coordinate|
-      index_lookup(coordinate).place_ship!
+  def place_ship!(ship, coordinates)
+    raise "Invalid placement" unless valid_placement?(ship, coordinates)
+    
+    ship.place(coordinates)    
+    
+    @ships << ship
+    coordinates.each do |coordinate|
+      cell_at(coordinate).mark_ship!
     end
   
-    @ships_at << CoordinateRange.get(indices)
   end
 
-  def replace_sunken_ships
-    @ships_at.each do |ship_coordinates|
-      if (ship_coordinates - @hits_at).empty?
-        ship_coordinates.each do |index|
-          index_lookup(index).sink!
-        end
-      end
-    end
-
-    return self
-  end
 
   def fire!(index)
-    cell = index_lookup(index)
+    cell = cell_at(index)
     if cell.empty?
       cell.miss!
     elsif cell.ship?
@@ -54,10 +33,27 @@ class Board < Array
     @hits_at << index
   end
 
-  def index_lookup(str)
-    self[ROWS[str[0]]][str[1].to_i] rescue nil
+
+  def hide_ships
+   self.each do |row|
+     row.each do |cell|
+       cell.hide_ship
+     end
+   end
   end
 
+
+  def replace_sunken_ships
+    @ships.each do |ship|
+      if (ship.coordinates - @hits_at).empty?
+        ship.coordinates.each do |index|
+          cell_at(index).sink!
+        end
+      end
+    end
+
+    return self
+  end
 
   def self.extract_all_indices
     indicies = []
@@ -71,13 +67,21 @@ class Board < Array
     indicies
   end
 
-
-  def valid_placement?(ship, start_index, end_index)
-    CoordinateRange.get(indices).each do |index|
-      return false if index_lookup(index).ship?
-    end
-    CoordinateRange.get(indices.row, indices.column).length == SHIPS[ship]
+  def cell_at(index)
+    self[ROWS[index[0]]][index[1].to_i] rescue nil
   end
+
+  private
+
+
+  def valid_placement?(ship, coordinates)
+    coordinates.each do |index|
+      raise "There's already a ship at index #{index}" if cell_at(index).ship?
+    end
+  end
+
 end
+
+
 
 

@@ -1,10 +1,10 @@
 # encoding: utf-8
 require 'colored'
 require 'pry'
-require_relative 'symbols'
 require_relative 'indices'
 require_relative 'cell'
 require_relative 'coordinate_range'
+require_relative 'ship'
 require_relative 'board'
 require_relative 'player'
 require_relative 'constants'
@@ -21,11 +21,11 @@ class Battleship
     def show
       puts "\e[H\e[2J"
       play_board = PRINT_BOARD.dup
-      @player.show_board.each do |letter|
-        play_board.sub!('*', letter)
+      @player.show_board.each do |cell|
+        play_board.sub!('*', cell.content)
       end
-      @computer.show_board.each do |letter|
-        play_board.sub!('%', letter)
+      @computer.show_board.each do |cell|
+        play_board.sub!('%', cell.content)
       end
       puts play_board
     end
@@ -47,12 +47,13 @@ class Battleship
       until @player.ships_placed?
         show_ships_left
         print "Place your ships: "
-        placement = gets.chomp.split(",")
-        unless placement - Board.extract_all_indices
+        input = gets.chomp.split(",")
+        indices = Indices.new(input[1], input[2])
+        unless input - Board.extract_all_indices
           puts "Invalid placement, stupid human"
           next
         end
-        @player.place_ship!(placement[0], placement[1], placement[2])
+        @player.place_ship!(input[0], CoordinateRange.get(indices))
       end
       show
 
@@ -87,3 +88,6 @@ class Battleship
 
 
 end
+
+game = Battleship.new
+game.play

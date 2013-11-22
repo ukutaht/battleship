@@ -11,21 +11,23 @@ describe Cell do
     c.ship.should eq "Whatever"
   end
 
-  describe '#place_ship' do
-    it 'places ship when valid' do
-      Cell.new.place_ship!.should eq Ship
+  describe '#mark_ship' do
+    it 'marks ship when valid' do
+      Cell.new.mark_ship!.should eq Cell::Ship
     end
 
     it 'errors when invalid' do
-      expect { Cell.new(Miss).place_ship! }.to raise_error
+      cell = Cell.new
+      cell.miss!
+      expect { cell.place_ship! }.to raise_error
     end
   end
 
   describe '#hide_ship' do
     it "hides ship" do
       c = Cell.new
-      c.place_ship!
-      c.hide_ship.should eq Empty
+      c.mark_ship!
+      c.hide_ship.should eq Cell::Empty
     end
   end
 

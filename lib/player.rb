@@ -6,7 +6,7 @@ class Player
   def initialize 
     @fleet = STANDARD_FLEET
     @salvo = STANDARD_FLEET
-    @board = Board.new(PLAYER_BOARD)
+    @board = Board.new
   end
 
 
@@ -19,7 +19,7 @@ class Player
     end
   end
 
-  def show_board   
+  def show_board
     @board.replace_sunken_ships.flatten
   end
 
@@ -36,12 +36,12 @@ class ComputerPlayer
   def initialize
     @fleet = STANDARD_FLEET
     @salvo = STANDARD_FLEET
-    @board = Board.new(COMPUTER_BOARD)
+    @board = Board.new
     @valid_moves = Board.extract_all_indices
   end
 
 
-  def show_board   
+  def show_board
     @board.replace_sunken_ships.hide_ships.flatten
   end
 
