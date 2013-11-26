@@ -8,13 +8,17 @@ class Board < Array
     super(array)
   end
 
+  def all_ships_sunk?
+    flatten.each do |cell|
+      return false if cell.ship?
+    end
+    true
+  end
 
-  def place_ship!(ship, coordinates)
-    raise "Invalid placement" unless valid_placement?(ship, coordinates)
-    
-    ship.place(coordinates)    
-    
-    @ships << ship
+
+  def mark_ship!(coordinates)
+    raise "Invalid placement" unless valid_placement?(coordinates)
+  
     coordinates.each do |coordinate|
       cell_at(coordinate).mark_ship!
     end
@@ -44,7 +48,7 @@ class Board < Array
 
 
   def replace_sunken_ships
-    @ships.each do |ship|
+    ships.each do |ship|
       if (ship.coordinates - @hits_at).empty?
         ship.coordinates.each do |index|
           cell_at(index).sink!
@@ -74,14 +78,10 @@ class Board < Array
   private
 
 
-  def valid_placement?(ship, coordinates)
+  def valid_placement?(coordinates)
     coordinates.each do |index|
       raise "There's already a ship at index #{index}" if cell_at(index).ship?
     end
   end
 
 end
-
-
-
-

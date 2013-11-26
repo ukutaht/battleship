@@ -38,16 +38,3 @@ ROWS =  {'A' => 0,
          'H' => 7,
          'I' => 8,
          'J' => 9,}
-
-SHIPS = {'Aircraft carrier' => 5,
-               'Battleship' => 4,
-                  'Cruiser' => 3,
-                'Destroyer' => 2,
-                'Submarine' => 1}
-
-STANDARD_FLEET = {'Aircraft carrier' => 1,
-                        'Battleship' => 1,
-                           'Cruiser' => 1,
-                         'Destroyer' => 2,
-                         'Submarine' => 2}
-

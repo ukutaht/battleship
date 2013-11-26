@@ -1,13 +1,14 @@
 # encoding: utf-8
 require 'colored'
 require 'pry'
+require_relative 'constants'
 require_relative 'indices'
 require_relative 'cell'
 require_relative 'coordinate_range'
 require_relative 'ship'
 require_relative 'board'
 require_relative 'player'
-require_relative 'constants'
+require_relative 'computer_player'
 
 class Battleship
     
@@ -33,12 +34,14 @@ class Battleship
     def show_ships_left
       unless @player.ships_placed?
         puts "Ships left:"
-        puts "#{@player.fleet}"
+        @player.fleet.each_with_index do |ship, index|
+          puts "{#{index + 1}} #{ship.name}(length: #{ship.length})"
+        end
       end
     end
 
     def game_over?
-      !(@player.board.flatten.include?(SYMBOLS[:ship]) && @computer.board.flatten.include?(SYMBOLS[:ship]))
+      @player.all_ships_sunk || @computer.all_ships_sunk
     end
     
 
@@ -46,14 +49,15 @@ class Battleship
       show
       until @player.ships_placed?
         show_ships_left
-        print "Place your ships: "
-        input = gets.chomp.split(",")
-        indices = Indices.new(input[1], input[2])
-        unless input - Board.extract_all_indices
-          puts "Invalid placement, stupid human"
-          next
+        print "Choose a ship:"
+        input_ship = gets.chomp
+        ship = @player.fleet[input_ship.to_i - 1]
+        if ship
+          print "Choose the start and end index for your #{ship.name}(length: #{ship.length}):"
+          input_indices = gets.chomp.split(',')
+          ship.place CoordinateRange.get(Indices.new(input_indices[0], input_indices[1]))
+          show
         end
-        @player.place_ship!(input[0], CoordinateRange.get(indices))
       end
       show
 
@@ -88,6 +92,5 @@ class Battleship
 
 
 end
-
 game = Battleship.new
 game.play

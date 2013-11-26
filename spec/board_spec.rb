@@ -14,25 +14,19 @@ describe Board do
 
   end
 
-  describe '#place_ship!' do
+  describe '#mark_ship!' do
     
-    it 'updates ships attribute' do
-      Cell.any_instance.should_receive(:mark_ship!).exactly(5).times
-      
-      board.place_ship!(ship, coordinates)
-      board.ships.should include(ship)
-    end
+    it 'errors when already marked' do
+      coordinates = ['A1', 'A2', 'A3', 'A4', 'A5']
+      board.mark_ship!(coordinates)      
 
-    it 'errors with invalid coordinates' do
-      coordinates = ['A1', 'A2', 'A3', 'A4', 'A5', 'A6']
-
-      expect { board.place_ship!(ship, coordinates) }.to raise_error
+      expect { board.mark_ship!(['A3']) }.to raise_error
     end
   end
 
   describe '#hide ships' do
     it 'hides ships' do
-      board.place_ship!(ship, coordinates)
+      board.mark_ship!(coordinates)
 
       board.hide_ships[0][0].should_not eq Cell::Ship
     end
@@ -40,14 +34,14 @@ describe Board do
 
   describe '#fire' do
     it 'marks cell as a hit' do
-      board.place_ship!(ship, coordinates)
+      board.mark_ship!(coordinates)
 
       board.fire!("A2")
       board.cell_at('A2').should be_hit
     end
 
     it 'updates @hits_at' do
-      board.place_ship!(ship, coordinates)
+      board.mark_ship!(coordinates)
       board.fire!("A2")
 
       board.hits_at.should include("A2")
@@ -56,14 +50,11 @@ describe Board do
 
   describe "replace sunken ships" do
     it 'replaces sunken ships' do
-      board.place_ship!(ship, coordinates)
-      board.fire!("A1")
-      board.fire!("A2")
-      board.fire!("A3")
-      board.fire!("A4")
-      board.fire!("A5")
+      ship.coordinates = coordinates
+      board.mark_ship!(coordinates)
+      board.fire!("A1"); board.fire!("A2"); board.fire!("A3"); board.fire!("A4"); board.fire!("A5")
 
-      board.replace_sunken_ships.cell_at("A1").should be_sunken      
+      board.replace_sunken_ships([ship]).cell_at("A1").should be_sunken      
 
     end
   end

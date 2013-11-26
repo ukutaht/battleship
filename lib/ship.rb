@@ -10,7 +10,7 @@ class Ship
   end
 
   def placed?
-    coordinates.empty?
+    coordinates.any?
   end
 
   def place(coordinates)
