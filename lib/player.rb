@@ -2,13 +2,13 @@ class Player
   attr_reader :fleet, :board
   
   def initialize 
-    @fleet = [ Ship.new('Aircraft carrier', 5),
-               Ship.new('Battleship', 4),
-               Ship.new('Cruiser', 3),
-               Ship.new('Destroyer', 2),
-               Ship.new('Destroyer', 2),
-               Ship.new('Submarine', 1),
-               Ship.new('Submarine', 1)]
+    @fleet = -> {[ Ship.new('Aircraft carrier', 5),
+                   Ship.new('Battleship', 4),
+                   Ship.new('Cruiser', 3),
+                   Ship.new('Destroyer', 2),
+                   Ship.new('Destroyer', 2),
+                   Ship.new('Submarine', 1),
+                   Ship.new('Submarine', 1)] }.call
 
     @board = Board.new
   end
@@ -21,6 +21,7 @@ class Player
   def place_ship(ship, coordinates)
     ship.place(coordinates)
     board.mark_ship!(ship.coordinates)
+    fleet.delete(ship)
   end
 
   def show_board

@@ -2,7 +2,7 @@ class Board < Array
   attr_reader :ships, :hits_at
   
   def initialize
-    array = Array.new(10) { Array.new(10, Cell.new) }
+    array = Array.new(10) { Array.new(10){Cell.new} }
     @ships = []
     @hits_at = []
     super(array)
@@ -18,7 +18,8 @@ class Board < Array
 
   def mark_ship!(coordinates)
     raise "Invalid placement" unless valid_placement?(coordinates)
-  
+
+    p "Board got these coordinates: #{coordinates}"
     coordinates.each do |coordinate|
       cell_at(coordinate).mark_ship!
     end

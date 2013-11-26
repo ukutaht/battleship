@@ -51,10 +51,11 @@ describe Board do
   describe "replace sunken ships" do
     it 'replaces sunken ships' do
       ship.coordinates = coordinates
+      board.ships << ship
       board.mark_ship!(coordinates)
       board.fire!("A1"); board.fire!("A2"); board.fire!("A3"); board.fire!("A4"); board.fire!("A5")
 
-      board.replace_sunken_ships([ship]).cell_at("A1").should be_sunken      
+      board.replace_sunken_ships.cell_at("A1").should be_sunken      
 
     end
   end

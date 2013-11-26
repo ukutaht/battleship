@@ -32,12 +32,10 @@ class Battleship
     end
 
     def show_ships_left
-      unless @player.ships_placed?
         puts "Ships left:"
         @player.fleet.each_with_index do |ship, index|
           puts "{#{index + 1}} #{ship.name}(length: #{ship.length})"
         end
-      end
     end
 
     def game_over?
@@ -46,8 +44,8 @@ class Battleship
     
 
     def play
-      show
       until @player.ships_placed?
+        show
         show_ships_left
         print "Choose a ship:"
         input_ship = gets.chomp
@@ -55,8 +53,8 @@ class Battleship
         if ship
           print "Choose the start and end index for your #{ship.name}(length: #{ship.length}):"
           input_indices = gets.chomp.split(',')
-          ship.place CoordinateRange.get(Indices.new(input_indices[0], input_indices[1]))
-          show
+          coordinates = input_indices.size > 1 ? CoordinateRange.get(Indices.new(input_indices[0], input_indices[1])) : input_indices
+          @player.place_ship(ship,coordinates)
         end
       end
       show
